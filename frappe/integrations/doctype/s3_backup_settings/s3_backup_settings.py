@@ -31,8 +31,12 @@ class S3BackupSettings(Document):
 			frappe.throw(_("Invalid Access Key ID or Secret Access Key."))
 
 		try:
-			conn.create_bucket(Bucket=bucket_lower)
+			conn.create_bucket(Bucket=bucket_lower, CreateBucketConfiguration={'LocationConstraint': 'ap-south-1'})
 		except ClientError:
+			exc_type, exc_value, exc_traceback = sys.exc_info()
+			exc_det = repr(traceback.format_exception(exc_type, exc_value, exc_traceback))
+			frappe.throw("Unable to create bucket: {0}. Error {1}".format(bucket_lower, exc_det))
+			#frappe.throw(_("Unable to create bucket: {0}. Change it to a more unique name.").format(bucket_lower))
 			frappe.throw(_("Unable to create bucket: {0}. Change it to a more unique name.").format(bucket_lower))
 
 
@@ -42,6 +46,8 @@ def take_backup():
 	enqueue("frappe.integrations.doctype.s3_backup_settings.s3_backup_settings.take_backups_s3", queue='long', timeout=1500)
 	frappe.msgprint(_("Queued for backup. It may take a few minutes to an hour."))
 
+def take_backups_hourly():
+	take_backups_if("Hourly")
 
 def take_backups_daily():
 	take_backups_if("Daily")
