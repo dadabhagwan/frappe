@@ -15,7 +15,8 @@ classes should alter those!
   border-right: 1px solid silver;
 }
 
-.slick-header-column:hover, .slick-header-column-active {
+.slick-header-column:hover,
+.slick-header-column-active {
   /*background: white url('images/header-columns-over-bg.gif') repeat-x center bottom;*/
 }
 
@@ -30,19 +31,19 @@ classes should alter those!
 }
 
 .slick-row.ui-state-active {
-  background: #F5F7D7;
+  background: #f5f7d7;
 }
 
 .slick-row {
   position: absolute;
-  background: white;
+  /* background: white; */
   border: 0px;
   line-height: 20px;
 }
 
 .slick-row.selected {
   z-index: 10;
-  background: #DFE8F6;
+  background: #dfe8f6;
 }
 
 .slick-cell {
@@ -85,13 +86,13 @@ classes should alter those!
 .slick-sortable-placeholder {
   background: silver !important;
 }
-
+/*
 .slick-row.odd {
   background: #fafafa;
-}
+}*/
 
 .slick-row.ui-state-active {
-  background: #F5F7D7;
+  background: #f5f7d7;
 }
 
 .slick-row.loading {
@@ -108,11 +109,19 @@ classes should alter those!
 }
 
 @-moz-keyframes slickgrid-invalid-hilite {
-  from { box-shadow: 0 0 6px red; }
-  to { box-shadow: none; }
+  from {
+    box-shadow: 0 0 6px red;
+  }
+  to {
+    box-shadow: none;
+  }
 }
 
 @-webkit-keyframes slickgrid-invalid-hilite {
-  from { box-shadow: 0 0 6px red; }
-  to { box-shadow: none; }
+  from {
+    box-shadow: 0 0 6px red;
+  }
+  to {
+    box-shadow: none;
+  }
 }

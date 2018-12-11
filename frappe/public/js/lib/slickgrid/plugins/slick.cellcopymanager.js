@@ -24,7 +24,7 @@
     function handleKeyDown(e, args) {
       var ranges;
       if (!_grid.getEditorLock().isActive()) {
-        if (e.which == frappe.ui.keyCode.ESCAPE) {
+        if (e.which == $.ui.keyCode.ESCAPE) {
           if (_copiedRanges) {
             e.preventDefault();
             clearCopySelection();
@@ -46,10 +46,12 @@
         if (e.which == 86 && (e.ctrlKey || e.metaKey)) {
           if (_copiedRanges) {
             e.preventDefault();
-            clearCopySelection();
             ranges = _grid.getSelectionModel().getSelectedRanges();
             _self.onPasteCells.notify({from: _copiedRanges, to: ranges});
-            _copiedRanges = null;
+            if (!_grid.getOptions().preserveCopiedSelectionOnPaste) {
+              clearCopySelection();
+              _copiedRanges = null;
+            }
           }
         }
       }

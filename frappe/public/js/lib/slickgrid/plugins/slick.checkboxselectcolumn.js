@@ -95,6 +95,30 @@
       } else {
         _grid.setSelectedRows(_grid.getSelectedRows().concat(row));
       }
+      _grid.setActiveCell(row, getCheckboxColumnCellIndex());
+      _grid.focus();
+    }
+
+    function selectRows(rowArray) {
+      var i, l=rowArray.length, addRows = [];
+      for(i=0; i<l; i++) { 
+        if (!_selectedRowsLookup[rowArray[i]]) {
+          addRows[addRows.length] = rowArray[i];
+        }
+      }
+      _grid.setSelectedRows(_grid.getSelectedRows().concat(addRows));
+    }
+
+    function deSelectRows(rowArray) {
+      var i, l=rowArray.length, removeRows = [];
+      for(i=0; i<l; i++) { 
+        if (_selectedRowsLookup[rowArray[i]]) {
+          removeRows[removeRows.length] = rowArray[i];
+        }
+      }
+      _grid.setSelectedRows($.grep(_grid.getSelectedRows(), function (n) {
+        return removeRows.indexOf(n)<0
+      }));
     }
 
     function handleHeaderClick(e, args) {
@@ -118,6 +142,21 @@
         e.stopPropagation();
         e.stopImmediatePropagation();
       }
+    }
+
+    var _checkboxColumnCellIndex = null;
+    
+    function getCheckboxColumnCellIndex() {
+      if (_checkboxColumnCellIndex === null) {
+        _checkboxColumnCellIndex = 0;
+        var colArr = _grid.getColumns();
+        for (var i=0; i < colArr.length; i++) {
+          if (colArr[i].id == _options.columnId) { 
+            _checkboxColumnCellIndex = i;
+          }
+        }
+      }
+      return _checkboxColumnCellIndex;
     }
 
     function getColumnDefinition() {
@@ -146,7 +185,8 @@
     $.extend(this, {
       "init": init,
       "destroy": destroy,
-
+      "deSelectRows": deSelectRows,
+      "selectRows": selectRows,
       "getColumnDefinition": getColumnDefinition
     });
   }
