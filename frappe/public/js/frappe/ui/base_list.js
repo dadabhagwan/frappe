@@ -258,6 +258,7 @@ frappe.ui.BaseList = Class.extend({
 
 	clear: function () {
 		this.data = [];
+		this.wrapper.find('.list-select-all').prop('checked', false);
 		this.wrapper.find('.result-list').empty();
 		this.wrapper.find('.result').show();
 		this.wrapper.find('.no-result').hide();
@@ -322,7 +323,6 @@ frappe.ui.BaseList = Class.extend({
 
 		return frappe.call({
 			method: this.opts.method || 'frappe.desk.query_builder.runquery',
-			type: "GET",
 			freeze: this.opts.freeze !== undefined ? this.opts.freeze : true,
 			args: args,
 			callback: function (r) {

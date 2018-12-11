@@ -7,6 +7,9 @@ import json, subprocess, os
 from semantic_version import Version
 import frappe
 from frappe.utils import cstr
+import requests
+from frappe import _
+import git
 
 def get_change_log(user=None):
 	if not user: user = frappe.session.user
@@ -99,7 +102,12 @@ def get_versions():
 		}
 
 		if versions[app]['branch'] != 'master':
-			branch_version = app_hooks.get('{0}_version'.format(versions[app]['branch']))
+			try:
+				app_repo = git.Repo(os.path.join('..', 'apps', '{}'.format(app)))
+				branch_version = '-'.join(app_repo.git.describe().split('-')[:2])
+				branch_version = [branch_version.strip('v')]
+			except:
+				branch_version = app_hooks.get('{0}_version'.format(versions[app]['branch']))
 			if branch_version:
 				versions[app]['branch_version'] = branch_version[0] + ' ({0})'.format(get_app_last_commit_ref(app))
 
@@ -124,3 +132,96 @@ def get_app_last_commit_ref(app):
 			shell=True).strip()[:7]
 	except Exception as e:
 		return ''
+
+def check_for_update():
+	updates = frappe._dict(major=[], minor=[], patch=[])
+	apps    = get_versions()
+
+	for app in apps:
+		app_details = check_release_on_github(app)
+		if not app_details: continue
+
+		github_version, org_name = app_details
+		# Get local instance's current version or the app
+		instance_version = Version(apps[app]['branch_version'].split(' ')[0])
+		# Compare and popup update message
+		for update_type in updates:
+			if github_version.__dict__[update_type] > instance_version.__dict__[update_type]:
+				updates[update_type].append(frappe._dict(
+					current_version   = str(instance_version),
+					available_version = str(github_version),
+					org_name          = org_name,
+					app_name          = app,
+					title             = apps[app]['title'],
+				))
+				break
+			if github_version.__dict__[update_type] < instance_version.__dict__[update_type]: break
+
+	add_message_to_redis(updates)
+
+def check_release_on_github(app):
+	# Check if repo remote is on github
+	from subprocess import CalledProcessError
+	try:
+		remote_url = subprocess.check_output("cd ../apps/{} && git ls-remote --get-url".format(app), shell=True)
+	except CalledProcessError:
+		# Passing this since some apps may not have git initializaed in them
+		return None
+
+	if "github.com" not in remote_url:
+		return None
+
+	# Get latest version from github
+	if 'https' not in remote_url:
+		return None
+
+	org_name = remote_url.split('/')[3]
+	r = requests.get('https://api.github.com/repos/{}/{}/releases'.format(org_name, app))
+	if r.status_code == 200 and r.json():
+		# 0 => latest release
+		return Version(r.json()[0]['tag_name'].strip('v')), org_name
+	else:
+		# In case of an improper response or if there are no releases
+		return None
+
+def add_message_to_redis(update_json):
+	# "update-message" will store the update message string
+	# "update-user-set" will be a set of users
+	cache = frappe.cache()
+	cache.set_value("update-info", json.dumps(update_json))
+	user_list = [x.name for x in frappe.get_all("User", filters={"enabled": True})]
+	system_managers = [user for user in user_list if 'System Manager' in frappe.get_roles(user)]
+	cache.sadd("update-user-set", *system_managers)
+
+@frappe.whitelist()
+def show_update_popup():
+	cache = frappe.cache()
+	user  = frappe.session.user
+
+	update_info = cache.get_value("update-info")
+	if not update_info:
+		return
+
+	updates = json.loads(update_info)
+	current_versions = get_versions()
+
+	# Check if user is int the set of users to send update message to
+	update_message = ""
+	if cache.sismember("update-user-set", user):
+		for update_type in updates:
+			release_links = ""
+			for app in updates[update_type]:
+				app = frappe._dict(app)
+				release_links += "<a href='https://github.com/{org_name}/{app_name}/releases/tag/v{available_version}'><b>{title}</b>: v{available_version}</a><br>".format(
+					available_version = app.available_version,
+					org_name          = app.org_name,
+					app_name          = app.app_name,
+					title             = app.title
+				)
+			if release_links:
+				update_message += _("New {} releases for the following apps are available".format(update_type)) + ":<br><br>{}<hr>".format(release_links)
+
+	if update_message:
+		frappe.msgprint(update_message, title=_("New updates are available"), indicator='green')
+		cache.srem("update-user-set", user)
+

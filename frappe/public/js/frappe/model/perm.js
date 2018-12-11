@@ -41,12 +41,13 @@ $.extend(frappe.perm, {
 		var perm = [{ read: 0, apply_user_permissions: {} }];
 
 		var meta = frappe.get_doc("DocType", doctype);
-		if (!meta) {
-			return perm;
-		}
 
 		if (frappe.session.user === "Administrator" || frappe.user_roles.includes("Administrator")) {
 			perm[0].read = 1;
+		}
+
+		if (!meta) {
+			return perm;
 		}
 
 		frappe.perm.build_role_permissions(perm, meta);
@@ -113,6 +114,7 @@ $.extend(frappe.perm, {
 				var permlevel = cint(p.permlevel);
 				if(!perm[permlevel]) {
 					perm[permlevel] = {};
+					perm[permlevel]["permlevel"] = permlevel
 				}
 
 				$.each(frappe.perm.rights, function(i, key) {
