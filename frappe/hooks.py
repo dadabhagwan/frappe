@@ -144,6 +144,9 @@ scheduler_events = {
 		"frappe.desk.page.backups.backups.delete_downloadable_backups",
 		"frappe.limits.update_space_usage"
 	],
+	"hourly_long": [
+		"frappe.integrations.doctype.s3_backup_settings.s3_backup_settings.take_backups_hourly"
+	],
 	"daily": [
 		"frappe.email.queue.clear_outbox",
 		"frappe.desk.notifications.clear_notifications",

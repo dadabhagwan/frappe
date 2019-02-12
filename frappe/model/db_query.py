@@ -619,7 +619,7 @@ def get_order_by(doctype, meta):
 def get_list(doctype, *args, **kwargs):
 	'''wrapper for DatabaseQuery'''
 	kwargs.pop('cmd', None)
-	kwargs.pop('ignore_permissions', None)
+	# kwargs.pop('ignore_permissions', None)
 
 	# If doctype is child table
 	if frappe.is_table(doctype):

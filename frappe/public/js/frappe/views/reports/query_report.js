@@ -83,6 +83,14 @@ frappe.views.QueryReport = Class.extend({
 			}, me.report_doc.letter_head);
 		}, true);
 
+		// this.page.add_menu_item(__("Clear Grid Filters"), function() {
+		// 	me.clear_grid_filters()
+		// }, true);
+
+		// this.page.add_action_icon('fa fa-eraser',function(){
+		// 	me.clear_grid_filters()
+		// });
+
 		this.page.add_menu_item(__("PDF"), function() {
 			frappe.ui.get_print_settings(true, function(print_settings) {
 				me.print_settings = print_settings;
@@ -318,6 +326,12 @@ frappe.views.QueryReport = Class.extend({
 				if(df.get_query) f.get_query = df.get_query;
 				if(df.on_change) f.on_change = df.on_change;
 				df.onchange = () => {
+					if (me.previous_filters 
+						&& (JSON.stringify(me.previous_filters) == JSON.stringify(me.get_values()))) {
+						console.log('Found matching filters, not refreshing report!')
+						return;
+					}
+					me.previous_filters = me.get_values();
 					if(!me.flags.filters_set) {
 						// don't trigger change while setting filters
 						return;

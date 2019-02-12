@@ -43,7 +43,7 @@ $.extend(frappe.desktop, {
 			link: 'modules'
 		};
 		explore_icon.app_icon = frappe.ui.app_icon.get_html(explore_icon);
-		all_icons.push(explore_icon);
+		// all_icons.push(explore_icon);
 
 		frappe.desktop.wrapper.html(frappe.render_template(template, {
 			// all visible icons

@@ -44,6 +44,12 @@ def migrate(verbose=True, rebuild_website=False):
 	# add static pages to global search
 	router.sync_global_search()
 
+	#run after_migrate hooks
+	for app in frappe.get_installed_apps():
+		if app != "App":
+			for fn in frappe.get_hooks('after_migrate', app_name=app):
+				frappe.get_attr(fn)()
+
 	frappe.db.commit()
 
 	clear_notifications()

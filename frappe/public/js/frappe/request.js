@@ -153,6 +153,10 @@ frappe.request.call = function(opts) {
 		504: function(xhr) {
 			frappe.msgprint(__("Request Timed Out"))
 			opts.error_callback && opts.error_callback();
+		},
+		502: function(xhr){
+			frappe.utils.play_sound("error");			
+			frappe.msgprint({message:__("Some problem has occurred on server. Please try after a few seconds."),indicator: 'red'});
 		}
 	};
 
