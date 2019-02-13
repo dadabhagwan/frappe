@@ -17,6 +17,12 @@ core_doctypes_list = ('DocType', 'DocField', 'DocPerm', 'User', 'Role', 'Has Rol
 	'Page', 'Module Def', 'Print Format', 'Report', 'Customize Form',
 	'Customize Form Field', 'Property Setter', 'Custom Field', 'Custom Script')
 
+# AT @pm-at 2019-02-13 - Allow customization to User DocType >>
+core_doctypes_list = list(core_doctypes_list) 
+core_doctypes_list.remove('User') 
+core_doctypes_list = tuple(core_doctypes_list)
+# AT @pm-at 2019-02-13 - Allow customization to User DocType <<
+
 def copytables(srctype, src, srcfield, tartype, tar, tarfield, srcfields, tarfields=[]):
 	if not tarfields:
 		tarfields = srcfields

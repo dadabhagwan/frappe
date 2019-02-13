@@ -79,7 +79,9 @@ frappe.Application = Class.extend({
 			this.show_notes();
 		}
 
-		this.show_update_available();
+		// AT @pm-at 2019-02-13: disable update notifications >>
+		// this.show_update_available();
+		// AT @pm-at 2019-02-13: disable update notifications <<
 
 		// listen to csrf_update
 		frappe.realtime.on("csrf_generated", function(data) {
