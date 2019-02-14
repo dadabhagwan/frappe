@@ -81,7 +81,9 @@ def send_via_gateway(arg):
 
 	if len(success_list) > 0:
 		args.update(arg)
-		create_sms_log(args, success_list)
+		# AT @pm-at 2019-02-14: disable sms logging as lot of SMSes are sent for EMS >>
+		#create_sms_log(args, success_list)
+		# AT @pm-at 2019-02-14: disable sms logging as lot of SMSes are sent for EMS <<
 		if arg.get('success_msg'):
 			frappe.msgprint(_("SMS sent to following numbers: {0}").format("\n" + "\n".join(success_list)))
 

@@ -705,7 +705,7 @@ class Document(BaseDocument):
 			print(self.as_json().encode("utf-8"))
 
 		raise frappe.MandatoryError('[{doctype}, {name}]: {fields}'.format(
-			fields=", ".join((each[0] for each in missing)),
+			fields=", ".join((each[0]+each[1] for each in missing)),
 			doctype=self.doctype,
 			name=self.name))
 
