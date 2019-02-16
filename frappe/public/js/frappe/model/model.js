@@ -68,10 +68,7 @@ $.extend(frappe.model, {
 			frappe.views.set_list_as_dirty(data.doctype);
 		});
 
-		//AT @pm-at 2019-02-13: remove user from core doctype list >>
-		core_doctypes_list.splice(core_doctypes_list.indexOf('User'),1);
-		//AT @pm-at 2019-02-13: remove user from core doctype list <<
-
+		
 	},
 
 	is_value_type: function(fieldtype) {
@@ -585,6 +582,10 @@ $.extend(frappe.model, {
 		return all;
 	},
 });
+
+//AT @pm-at 2019-02-13: remove user from core doctype list >>
+frappe.model.core_doctypes_list.splice(frappe.model.core_doctypes_list.indexOf('User'),1);
+//AT @pm-at 2019-02-13: remove user from core doctype list <<
 
 // legacy
 frappe.get_doc = frappe.model.get_doc;
