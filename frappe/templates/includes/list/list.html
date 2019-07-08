@@ -8,7 +8,15 @@
     </div>
 {% else %}
     <div class="website-list" data-doctype="{{ doctype }}"
-        data-txt="{{ txt or '[notxt]' }}">
+		data-txt="{{ txt or '[notxt]' }}">
+				<div class="row web-list-item">
+				  <div class="col-xs-3">Full Name</div>
+				  <div class="col-xs-3">Payment Receipt No.</div>
+					<div class="w-100"></div>
+					<div class="col-xs-2">Date of Payment</div>
+				  <div class="col-xs-2">Paid Amount</div>
+				  <div class="col-xs-2">Download / Print Receipt</div>
+				</div>
         <!-- {% if not hide_filters -%}
             {% include "templates/includes/list/filters.html" %}
         {%- endif %} -->

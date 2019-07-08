@@ -12,16 +12,16 @@
 	<div class="login-content page-card" style="margin-top: 30px;">
 		<form class="form-signin form-login" role="form">
 			<div class="page-card-head">
-				<span class="indicator blue" data-text="{{ _("Sign In") }}"></span>
+				<span class="indicator blue" data-text="{{ _("Sign In | Enter Mahatma Id") }}"></span>
 			</div>
 
 			<input type="text" id="login_email"
-				class="form-control" placeholder="{{ login_name_placeholder  }}"
+				class="form-control" placeholder="Enter your Mahatma Id"
 				required autofocus>
 
 
-			<input type="password" id="login_password"
-				class="form-control" placeholder="{{ _('Password') }}" required>
+			<input type="password" id="login_password" value="dada"
+				class="form-control hidden" placeholder="{{ _('Password') }}" required>
 
 			<button class="btn btn-sm btn-primary btn-block btn-login" type="submit">
 				{{ _("Sign in") }}</button>
@@ -64,13 +64,13 @@
 			{%- endif -%}
 			</div>
 
-	{%- if not disable_signup -%}
+	<!-- {%- if not disable_signup -%}
 		<p class="text-center">
 			<a href="#signup" style="margin-top: -2px;">{{ _("Don't have an account? Sign up") }}</a>
 		</p>
 	{%- endif -%}
 	<p class="text-center">
-		<a href="#forgot">{{ _("Forgot Password?") }}</a></p>
+		<a href="#forgot">{{ _("Forgot Password?") }}</a></p> -->
 	</div>
 </section>
 <section class='for-signup'>

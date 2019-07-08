@@ -1,6 +1,7 @@
 {
- "apply_style": 0, 
- "apply_text_styles": 0, 
+ "apply_style": 1, 
+ "apply_text_styles": 1, 
+ "background_color": "", 
  "creation": "2015-02-19 13:37:33.925909", 
  "css": ".navbar-header {\n  display: none;\n}", 
  "custom": 0, 
@@ -13,7 +14,7 @@
  "heading_webfont": "", 
  "idx": 26, 
  "link_color": "", 
- "modified": "2016-12-29 05:40:17.289226", 
+ "modified": "2019-06-21 18:54:13.086889", 
  "modified_by": "Administrator", 
  "module": "Website", 
  "name": "Standard", 

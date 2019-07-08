@@ -1,5 +1,40 @@
-<div class="web-list-item">
+<!-- <div class="web-list-item">
     <a class="no-decoration" href="/{{ route }}">
         <p>{{ doc.get(title_field) }}</p>
     </a>
+</div> -->
+<div class="row web-list-item">
+    {% set first_name = frappe.db.get_value("User", doc.icard_id, "first_name") %}
+    {% set middle_name = frappe.db.get_value("User", doc.icard_id, "middle_name") %}
+    {% set last_name = frappe.db.get_value("User", doc.icard_id, "last_name") %}
+    <div class="col-xs-3">
+        <a class="no-decoration" href="/{{ route }}">
+            <b>{{ first_name }} {{ middle_name }} {{ last_name }}</b>
+        </a>
+    </div>
+    <div class="col-xs-3 italic">
+        <a class="no-decoration" href="/{{ route }}">
+            {% if doc.get(title_field) %}
+            <b style="color: green">{{ doc.get(title_field) }}</b>
+            {%- endif %}
+            {% if not doc.get(title_field) %}
+            <b style="color: red">Payment Confirmation Pending</b>
+            {%- endif %}
+        </a>
+    </div>
+    <div class="col-xs-2">
+        {% if doc.date_of_payment %}
+        <b>{{ doc.date_of_payment.strftime("%d/%m/%Y") }}</b>
+        {%- endif %}
+    </div>
+    <div class="col-xs-2">
+        <b>₹ {{ doc.amount_paid }}.00</b>
+    </div>
+    <div class='col-xs-2'>
+        {% if doc.get(title_field) %}
+        <a href='/printview?doctype={{ doc.doctype}}&name={{ doc.name }}
+			{%- if print_format -%}&format={{ print_format }}{%- endif -%}' target="_blank" rel="noopener noreferrer">
+            <i class='fa fa-print'></i> {{ _("Print") }}</a>
+        {%- endif %}
+    </div>
 </div>

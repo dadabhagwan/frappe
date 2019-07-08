@@ -28,7 +28,7 @@
 	{% if is_list %}
 	<div style="padding-bottom: 15px;">
 	    <a href="/{{ pathname }}{{ delimeter }}new=1{{ params_from_form_dict}}" class="btn btn-primary btn-new btn-sm">
-	    {{ _("New") }}
+	    {{ _("Add Payment Entry") }}
 	    </a>
 	</div>
 	{% endif %}
@@ -51,7 +51,7 @@
 {% if _login_required %}
 <div class="login-required">
 	<div class="text-muted">
-		{{ _("Please sign-up or login to begin") }}
+		{{ _("Please login to begin") }}
 	</div>
 	<p>
 		<a href="/login?redirect-to=/{{ pathname }}" class="btn btn-primary">
@@ -116,11 +116,20 @@
 	<div class="form-group{% if field.reqd %} has-error{% endif %}">
 		{% if with_label %}{{ label(field) }}{% endif %}
 		<select class="form-control" {{ properties(field) }}>
-			{% for option in ([{"name":""}] + frappe.get_all(field.options)) -%}
-			<option value="{{ option.name }}"
-				{{ 'selected="selected"' if value(field, _doc)==option.name else '' }}>
-				{{ option.name }}</option>
-			{%- endfor %}
+			{% if field.options=='User' %}
+				{% for option in ([{"name":""}] + frappe.get_all(field.options, {'user_type': 'Website User', 'enabled': 1})) -%}
+				<option value="{{ option.name }}"
+					{{ 'selected="selected"' if value(field, _doc)==option.name else '' }}>
+					{{ option.name }}</option>
+				{%- endfor %}
+			{% endif %}
+			{% if field.options!='User' %}
+				{% for option in ([{"name":""}] + frappe.get_all(field.options)) -%}
+				<option value="{{ option.name }}"
+					{{ 'selected="selected"' if value(field, _doc)==option.name else '' }}>
+					{{ option.name }}</option>
+				{%- endfor %}
+			{% endif %}
 		</select>
 		{{ help(field) }}
 	</div>
@@ -154,7 +163,7 @@
 		{% if with_label %}{{ label(field) }}{% endif %}
 		{% if value(field, _doc) -%}
 		<p class="small">
-			<a href="{{ doc.get(field.fieldname) }}" target="blank">
+			<a href="{{ _doc.get(field.fieldname) }}" target="blank">
 				{{ _doc.get(field.fieldname) }}
 			</a>
 			<br><button class="btn btn-small btn-default btn-xs
@@ -229,8 +238,8 @@
 			</tbody>
 		</table>
 	</div>
-	<p><button class='btn btn-default btn-sm btn-add-row'
-		data-fieldname='{{ field.fieldname }}'>{{ _("Add Row") }}</button></p>
+	<p><button class='btn btn-default btn-sm btn-add-row btn-primary'
+		data-fieldname='{{ field.fieldname }}'>{{ _("Add Mahatma Details") }}</button></p>
 {% endmacro %}
 
 <!-- pagination -->
@@ -352,7 +361,7 @@
 <script>
 window.web_form_settings = {
 	allow_incomplete: 	{{ allow_incomplete or 0 }},
-	success_link: 		'<p>{{ success_message or _("Your information has been submitted") }}</p><p><a href="{{ success_url or "/" }}" class="btn btn-sm btn-default">{{ _("Continue") }}</a></p>',
+	success_link: 		'<p>{{ success_message or _("We have received your details of payment. We shall check with our bank and confirm maximum within 5 days.") }}</p><p><a href="{{ success_url or "/" }}" class="btn btn-sm btn-default">{{ _("Continue") }}</a></p>',
 	datepicker_format: 	"{{ frappe.date_format }}",
 	web_form_doctype: 	"{{ doc_type }}",
 	web_form_name: 		"{{ name }}",

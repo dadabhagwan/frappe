@@ -70,17 +70,17 @@ def get(doctype, txt=None, limit_start=0, limit=20, **kwargs):
 	for doc in raw_result:
 		doc.doctype = doctype
 		new_context = frappe._dict(doc=doc, meta=meta)
+		if new_context.doc.docstatus == 0 or new_context.doc.docstatus == 1:
+			if not list_context.get_list and not isinstance(new_context.doc, Document):
+				new_context.doc = frappe.get_doc(doc.doctype, doc.name)
+				new_context.update(new_context.doc.as_dict())
 
-		if not list_context.get_list and not isinstance(new_context.doc, Document):
-			new_context.doc = frappe.get_doc(doc.doctype, doc.name)
-			new_context.update(new_context.doc.as_dict())
-
-		if not frappe.flags.in_test:
-			new_context["pathname"] = frappe.local.request.path.strip("/ ")
-		new_context.update(list_context)
-		set_route(new_context)
-		rendered_row = frappe.render_template(row_template, new_context, is_path=True)
-		result.append(rendered_row)
+			if not frappe.flags.in_test:
+				new_context["pathname"] = frappe.local.request.path.strip("/ ")
+			new_context.update(list_context)
+			set_route(new_context)
+			rendered_row = frappe.render_template(row_template, new_context, is_path=True)
+			result.append(rendered_row)
 
 	return {
 		"result": result,

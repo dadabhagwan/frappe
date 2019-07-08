@@ -13,6 +13,18 @@ login.bind_events = function() {
 	});
 
 
+	$("#login_email").blur(()=>{
+		if(in_list(["administrator", "support", "support@amba-tech.com", "maulesh", "aditya", "krupesh", "uday", "vivek", "rohit"],$("#login_email").val().toLowerCase())) {
+			// $(".password-field").removeClass("hidden");
+			$("#login_password").removeClass("hidden");
+			// $(".toggle-password").removeClass("hidden");
+		} else {
+			// $(".password-field").addClass("hidden");
+			$("#login_password").addClass("hidden");
+			// $(".toggle-password").addClass("hidden");
+		}
+	});
+
 	$(".form-login").on("submit", function(event) {
 		event.preventDefault();
 		var args = {};
@@ -216,7 +228,8 @@ login.login_handlers = (function() {
 				}
 			}
 		},
-		401: get_error_handler("{{ _("Invalid Login. Try again.") }}"),
+		// 401: get_error_handler("{{ _("Invalid Login. Try again.") }}"),
+		401: get_error_handler("{{ _("Not a valid user") }}"),
 		417: get_error_handler("{{ _("Oops! Something went wrong") }}")
 	};
 
@@ -262,7 +275,7 @@ var request_otp = function(r){
 			<div id="otp_div"></div>\
 			<input type="text" id="login_token" autocomplete="off" class="form-control" placeholder="Verification Code" required="" autofocus="">\
 			<button class="btn btn-sm btn-primary btn-block" id="verify_token">Verify</button>\
-		</form>'));
+		</form><br><p>If this is not your correct mobile number pleases contact centre coordinator or if your centre is not there then contact Satsang coordination office to update your mobile number.</p><br><p>જો આપનો મોબાઇલ નંબર સાચો ના હોય તો આપ આપના સેન્ટર કોર્ડીનેટરનો સંપર્ક કરો અથવા આપને ત્યાં સેન્ટર ન હોય તો આપ સત્સંગ કોર્ડીનેશન ઓફિસમાં સંપર્ક કરો.</p>'));
 	// add event handler for submit button
 	verify_token();
 }

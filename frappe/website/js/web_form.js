@@ -1,4 +1,7 @@
-frappe.ready(function() {
+frappe.ready(function () {
+	if (document.getElementsByClassName("btn-primary").length > 0) {
+		document.getElementsByClassName("btn-primary")[0].click();
+	}
 	frappe.file_reading = false;
 	frappe.form_dirty = false;
 
@@ -7,26 +10,26 @@ frappe.ready(function() {
 
 	$('[data-toggle="tooltip"]').tooltip();
 
-	var $form = $("form[data-web-form='"+frappe.web_form_name+"']");
+	var $form = $("form[data-web-form='" + frappe.web_form_name + "']");
 
 	// read file attachment
-	$form.on("change", "[type='file']", function() {
+	$form.on("change", "[type='file']", function () {
 		var $input = $(this);
-		if($input.attr("type")==="file") {
+		if ($input.attr("type") === "file") {
 			var input = $input.get(0);
 			var reader = new FileReader();
 
-			if(input.files.length) {
+			if (input.files.length) {
 				var file = input.files[0];
 				frappe.file_reading = true;
-				reader.onload = function(e) {
+				reader.onload = function (e) {
 					input.filedata = {
 						"__file_attachment": 1,
 						"filename": file.name,
 						"dataurl": reader.result
 					};
 
-					if(input.filedata.dataurl.length >
+					if (input.filedata.dataurl.length >
 						(frappe.max_attachment_size * 1024 * 1024)) {
 						frappe.msgprint(__('Max file size allowed is {0}MB',
 							[frappe.max_attachment_size]));
@@ -44,42 +47,44 @@ frappe.ready(function() {
 		}
 	});
 
-	var set_mandatory_class = function(input) {
-		if($(input).attr('data-reqd')) {
+	var set_mandatory_class = function (input) {
+		if ($(input).attr('data-reqd')) {
 			$(input).parent().toggleClass('has-error', !!!$(input).val());
 		}
 	}
 
 	// show mandatory fields as red
-	$('.form-group input, .form-group textarea, .form-group select').on('change', function() {
+	$('.form-group input, .form-group textarea, .form-group select').on('change', function () {
 		set_mandatory_class(this);
-	}).on('keypress', function() {
+	}).on('keypress', function () {
 		set_mandatory_class(this);
 
 		// validate maxlength
 		var maxlength = parseInt($(this).attr('maxlength'));
-		if(maxlength && (($(this).val() || '') + '').length > maxlength-1) {
-			$(this).val($(this).val().substr(0, maxlength-1));
+		if (maxlength && (($(this).val() || '') + '').length > maxlength - 1) {
+			$(this).val($(this).val().substr(0, maxlength - 1));
 		}
-	}).each(function() { set_mandatory_class(this); });
+	}).each(function () {
+		set_mandatory_class(this);
+	});
 
 	// if changed, set dirty flag
-	$form.on('change', function() {
+	$form.on('change', function () {
 		frappe.form_dirty = true;
 	});
 
-	$form.on('submit', function() {
+	$form.on('submit', function () {
 		return false;
 	});
 
 	// allow payment only if
-	$('.btn-payment').on('click', function() {
+	$('.btn-payment').on('click', function () {
 		save(true);
 		return false;
 	});
 
 	// change attach
-	$form.on("click", ".change-attach", function() {
+	$form.on("click", ".change-attach", function () {
 		var input_wrapper = $(this).parent().addClass("hide")
 			.parent().find(".attach-input-wrap").removeClass("hide");
 
@@ -91,101 +96,132 @@ frappe.ready(function() {
 	});
 
 	// change section
-	$('.btn-change-section, .slide-progress .fa-fw').on('click', function() {
+	$('.btn-change-section, .slide-progress .fa-fw').on('click', function () {
 		var idx = $(this).attr('data-idx');
-		if(!frappe.form_dirty || frappe.is_read_only) {
+		if (!frappe.form_dirty || frappe.is_read_only) {
 			show_slide(idx);
 		} else {
-			if(save()!==false) {
+			if (save() !== false) {
 				show_slide(idx);
 			}
 		}
 		return false;
 	});
 
-	var show_slide = function(idx) {
+	var show_slide = function (idx) {
 		// hide all sections
 		$('.web-form-page').addClass('hidden');
 
 		// slide-progress
 		$('.slide-progress .fa-circle')
 			.removeClass('fa-circle').addClass('fa-circle-o');
-		$('.slide-progress .fa-fw[data-idx="'+idx+'"]')
+		$('.slide-progress .fa-fw[data-idx="' + idx + '"]')
 			.removeClass('fa-circle-o').addClass('fa-circle');
 
 		// un hide target section
-		$('.web-form-page[data-idx="'+idx+'"]')
+		$('.web-form-page[data-idx="' + idx + '"]')
 			.removeClass('hidden')
 			.find(':input:first').focus();
 
 	}
 
 	// add row
-	$('.btn-add-row').on('click', function() {
+	$('.btn-add-row').on('click', function () {
 		var fieldname = $(this).attr('data-fieldname');
-		var grid = $('.web-form-grid[data-fieldname="'+fieldname+'"]');
+		var grid = $('.web-form-grid[data-fieldname="' + fieldname + '"]');
 		var new_row = grid.find('.web-form-grid-row.hidden').clone()
 			.appendTo(grid.find('tbody'))
 			.attr('data-name', '')
 			.removeClass('hidden');
-		new_row.find('input').each(function() {
+		new_row.find('input').each(function () {
 			$(this)
 				.val($(this).attr('data-default') || "")
 				.removeClass('hasDatepicker')
 				.attr('id', '');
 		});
 		setup_date_picker(new_row);
+
+		// $('select[name=icard]').on('change', function (e) {
+		// $('input[name=icard]').on('change', function (e) {
+		// 	debugger;
+		// 	// frappe.dom = $(this).closest("input[name=user_details]");
+		// 	frappe.dom = $(this).parent().parent().parent().children().find('input[name=user_details]');
+		// 	frappe.call({
+		// 		method: 'jatra_2020.jatra_2020.web_form.payment_entry.__init__.get_user',
+		// 		args: {
+		// 			icard: $(this).closest("input").find(':selected').context.value
+		// 		},
+		// 		callback: function (r) {
+		// 			frappe.dom.val(r.message[0].maskedfname + ' ' + r.message[0].maskedlname);
+		// 		}
+		// 	});
+		// });
+
+		// $('input[name=payment_amount]').on('change', function (e) {
+		// 	frappe.sum = 0;
+		// 	$('input[name="payment_amount"]').each((i, j) => {
+		// 		console.log(i);
+		// 		if (j.value) frappe.sum += parseInt(j.value);
+		// 	})
+		// 	if (frappe.sum != parseInt($('input[name="amount_paid"]').val())) {
+		// 		frappe.msgprint('Total Amount does not match!');
+		// 	}
+		// });
+
 		return false;
 	});
 
 	// remove row
-	$('.web-form-grid').on('click', '.btn-remove', function() {
+	$('.web-form-grid').on('click', '.btn-remove', function () {
 		$(this).parents('.web-form-grid-row:first').addClass('hidden').remove();
 		frappe.form_dirty = true;
 		return false;
 	});
 
 	// get document data
-	var get_data = function() {
+	var get_data = function () {
 		frappe.mandatory_missing_in_last_doc = [];
 
 		var doc = get_data_for_doctype($form, frappe.web_form_doctype);
 		doc.doctype = frappe.web_form_doctype;
-		if(frappe.doc_name) {
+		if (frappe.doc_name) {
 			doc.name = frappe.doc_name;
 		}
 		frappe.mandatory_missing = frappe.mandatory_missing_in_last_doc;
 
 		// get data from child tables
-		$('.web-form-grid').each(function() {
+		$('.web-form-grid').each(function () {
+			debugger;
 			var fieldname = $(this).attr('data-fieldname');
 			var doctype = $(this).attr('data-doctype');
 			doc[fieldname] = [];
 
 			// get data from each row
-			$(this).find('[data-child-row=1]').each(function() {
-				if(!$(this).hasClass('hidden')) {
+			$(this).find('[data-child-row=1]').each(function () {
+				if (!$(this).hasClass('hidden')) {
 					frappe.mandatory_missing_in_last_doc = [];
 					var d = get_data_for_doctype($(this), doctype);
 
 					// set name of child record (if set)
 					var name = $(this).attr('data-name');
-					if(name) { d.name = name; }
+					if (name) {
+						d.name = name;
+					}
 
 					// check if child table has value
 					var has_value = false;
-					for(var key in d) {
-						if(typeof d[key]==='string') {
+					for (var key in d) {
+						if (typeof d[key] === 'string') {
 							d[key] = d[key].trim();
 						}
-						if(d[key] !== null && d[key] !== undefined && d[key] !== '') {
+						if (d[key] !== null && d[key] !== undefined && d[key] !== '') {
 							has_value = true;
 							break;
 						}
 					}
 
 					// only add if any value is set
-					if(has_value) {
+					if (has_value) {
 						doc[fieldname].push(d);
 						frappe.mandatory_missing =
 							frappe.mandatory_missing.concat(frappe.mandatory_missing_in_last_doc);
@@ -199,32 +235,34 @@ frappe.ready(function() {
 
 	// get data from input elements
 	// for the given doctype
-	var get_data_for_doctype = function(parent, doctype) {
+	var get_data_for_doctype = function (parent, doctype) {
 		var out = {};
-		parent.find("[name][data-doctype='"+ doctype +"']").each(function() {
+		parent.find("[name][data-doctype='" + doctype + "']").each(function () {
 			var $input = $(this);
 			var input_type = $input.attr("data-fieldtype");
 			var no_attachment = false;
 
-			if(input_type==="Attach") {
+			if (input_type === "Attach") {
 				// save filedata dict as value
-				if($input.get(0).filedata) {
+				if ($input.get(0).filedata) {
 					var val = $input.get(0).filedata;
 				} else {
 					// original value
 					var val = $input.attr('data-value');
 					if (!val) {
-						val = {'__no_attachment': 1}
+						val = {
+							'__no_attachment': 1
+						}
 						no_attachment = true;
 					}
 				}
-			} else if(input_type==='Text Editor') {
+			} else if (input_type === 'Text Editor') {
 				var val = $input.parent().find('.note-editable').html();
-			} else if(input_type==="Check") {
+			} else if (input_type === "Check") {
 				var val = $input.prop("checked") ? 1 : 0;
-			} else if(input_type==="Date") {
+			} else if (input_type === "Date") {
 				// convert from user format to YYYY-MM-DD
-				if($input.val()) {
+				if ($input.val()) {
 					var val = moment($input.val(), moment.defaultFormat).format('YYYY-MM-DD');
 				} else {
 					var val = null;
@@ -233,14 +271,15 @@ frappe.ready(function() {
 				var val = $input.val();
 			}
 
-			if(typeof val==='string') {
+			if (typeof val === 'string') {
 				val = val.trim();
 			}
 
-			if($input.attr("data-reqd")
-				&& (val===undefined || val===null || val==='' || no_attachment)) {
+			if ($input.attr("data-reqd") &&
+				(val === undefined || val === null || val === '' || no_attachment)) {
 				frappe.mandatory_missing_in_last_doc.push([$input.attr("data-label"),
-					$input.parents('.web-form-page:first').attr('data-label')]);
+					$input.parents('.web-form-page:first').attr('data-label')
+				]);
 			}
 
 			out[$input.attr("name")] = val;
@@ -249,19 +288,20 @@ frappe.ready(function() {
 	}
 
 	function save(for_payment) {
-		if(window.saving)
+		debugger;
+		if (window.saving)
 			return false;
 		window.saving = true;
 		frappe.form_dirty = false;
 
-		if(frappe.file_reading) {
+		if (frappe.file_reading) {
 			window.saving = false;
 			frappe.msgprint(__("Uploading files please wait for a few seconds."));
 			return false;
 		}
 
 		var data = get_data();
-		if((!frappe.allow_incomplete || for_payment) && frappe.mandatory_missing.length) {
+		if ((!frappe.allow_incomplete || for_payment) && frappe.mandatory_missing.length) {
 			window.saving = false;
 			show_mandatory_missing();
 			return false;
@@ -277,19 +317,20 @@ frappe.ready(function() {
 			},
 			freeze: true,
 			btn: $form.find("[type='submit']"),
-			callback: function(data) {
-				if(!data.exc) {
+			callback: function (data) {
+				if (!data.exc) {
 					frappe.doc_name = data.message;
-					if(!frappe.login_required) {
+					if (!frappe.login_required) {
 						show_success_message();
 					}
 
-					if(frappe.is_new && frappe.login_required) {
+					if (frappe.login_required) {
 						// reload page (with ID)
-						window.location.href = window.location.pathname + "?name=" + frappe.doc_name;
+						// window.location.href = window.location.pathname + "?name=" + frappe.doc_name;
+						show_success_message();
 					}
 
-					if(for_payment && data.message) {
+					if (for_payment && data.message) {
 						// redirect to payment
 						window.location.href = data.message;
 					}
@@ -297,7 +338,7 @@ frappe.ready(function() {
 					frappe.msgprint(__('There were errors. Please report this.'));
 				}
 			},
-			always: function() {
+			always: function () {
 				window.saving = false;
 			}
 		});
@@ -312,17 +353,18 @@ frappe.ready(function() {
 	}
 
 	function show_mandatory_missing() {
-		var text = [], last_section = null;
-		frappe.mandatory_missing.forEach(function(d) {
-			if(last_section != d[1]) {
+		var text = [],
+			last_section = null;
+		frappe.mandatory_missing.forEach(function (d) {
+			if (last_section != d[1]) {
 				text.push('');
 				text.push(d[1].bold());
 				last_section = d[1];
 			}
 			text.push(d[0]);
 		});
-		frappe.msgprint(__('The following mandatory fields must be filled:<br>')
-			+ text.join('<br>'));
+		frappe.msgprint(__('The following mandatory fields must be filled:<br>') +
+			text.join('<br>'));
 	}
 
 	function set_message(msg, permanent) {
@@ -330,32 +372,55 @@ frappe.ready(function() {
 			.html(msg)
 			.removeClass("hide");
 
-		if(!permanent) {
-			setTimeout(function() {
+		if (!permanent) {
+			setTimeout(function () {
 				$(".form-message").addClass('hide');
 			}, 5000);
 		}
 	}
 
 	// submit
-	$(".btn-form-submit").on("click", function() {
-		save();
-		return false;
+	$(".btn-form-submit").on("click", function () {
+		frappe.sum = 0;
+		pendingamt_Status = true;
+		$('input[name="payment_amount"]').each((i, j) => {
+			if (i > 0) {
+				if (parseInt(j.value) > parseInt($('input[name="pendingamt"]')[i].value) || parseInt(j.value) <= 0) {
+					pendingamt_Status = false;
+				}
+				if (j.value) frappe.sum += parseInt(j.value);
+			}
+		});
+		if (!pendingamt_Status) {
+			frappe.msgprint(`"Amount paid for MHT Id" should be less than or equal to "Pending Amount"<br>`+`("MHT ID માટે ચુકવેલ રકમ" - "બાકી રકમ" કરતા ઓછી અથવા સમાન હોવી જોઈએ)`);
+			return false;
+		}
+		if (frappe.sum != parseInt($('input[name="amount_paid"]').val())) {
+			amount = parseInt(~~$('input[name="amount_paid"]').val());
+			if (frappe.sum > amount) {
+				frappe.msgprint("Total 'Paid Amount' does not match with the sum of 'Paid Amount per MHT Ids' under the Person Detail. Difference of Amount : " + parseInt(frappe.sum - amount));
+			} else {
+				frappe.msgprint("Total 'Paid Amount' does not match with the sum of 'Paid Amount per MHT Ids' under the Person Detail. Difference of Amount : " + parseInt(frappe.sum - amount));
+			}
+		} else {
+			save();
+			return false;
+		}
 	});
 
 	// close button
-	$(".close").on("click", function() {
+	$(".close").on("click", function () {
 		var name = $(this).attr("data-name");
-		if(name) {
+		if (name) {
 			frappe.call({
-				type:"POST",
+				type: "POST",
 				method: "frappe.website.doctype.web_form.web_form.delete",
 				args: {
 					"web_form": frappe.web_form_name,
 					"name": name
 				},
-				callback: function(r) {
-					if(!r.exc) {
+				callback: function (r) {
+					if (!r.exc) {
 						location.reload();
 					}
 				}
@@ -364,32 +429,32 @@ frappe.ready(function() {
 	});
 
 	// setup datepicker in all inputs within the given element
-	var setup_date_picker = function(ele) {
+	var setup_date_picker = function (ele) {
 		var $dates = ele.find("[data-fieldtype='Date']");
 		var $date_times = ele.find("[data-fieldtype='Datetime']");
 
 		// setup date
-		if($dates.length) {
+		if ($dates.length) {
 			$dates.datepicker({
 				language: "en",
 				autoClose: true,
 				dateFormat: frappe.datepicker_format,
-				onSelect: function(date, date_str, e) {
+				onSelect: function (date, date_str, e) {
 					e.$el.trigger('change');
 				}
 			});
 
 			// initialize dates from YYYY-MM-DD to user format
-			$dates.each(function() {
+			$dates.each(function () {
 				var val = $(this).attr('value');
-				if(val) {
+				if (val) {
 					$(this).val(moment(val, 'YYYY-MM-DD').format()).trigger('change');
 				}
 			});
 		}
 
 		// setup datetime
-		if($date_times.length) {
+		if ($date_times.length) {
 			$date_times.datepicker({
 				language: "en",
 				autoClose: true,
@@ -403,10 +468,10 @@ frappe.ready(function() {
 	setup_date_picker($form);
 
 	var summernotes = {};
-	var setup_text_editor = function() {
+	var setup_text_editor = function () {
 		var editors = $('[data-fieldtype="Text Editor"]');
-		editors.each(function() {
-			if($(this).attr('disabled')) return;
+		editors.each(function () {
+			if ($(this).attr('disabled')) return;
 			summernotes[$(this).attr('data-fieldname')] = $(this).summernote({
 				minHeight: 400,
 				toolbar: [

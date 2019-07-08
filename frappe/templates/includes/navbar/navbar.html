@@ -1,6 +1,6 @@
 	<nav class="navbar navbar-default navbar-main" role="navigation">
 		<div class="container">
-			<div class="navbar-header">
+			<div class="navbar-header" style="display: block !important;">
 				<a class="navbar-brand ellipsis"
 					 href="{{ url_prefix }}{{ home_page or "/"}}">
 					<span>{{ brand_html or (frappe.get_hooks("brand_html") or ["Home"])[0] }}</span>

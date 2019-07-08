@@ -64,8 +64,8 @@ class File(NestedSet):
 		return frappe.db.sql_list("select name from tabFile where folder='%s'"%self.name) or []
 
 	def validate(self):
-		if self.is_new():
-			self.validate_duplicate_entry()
+		# if self.is_new():
+		# 	self.validate_duplicate_entry()
 		self.validate_folder()
 
 		if not self.flags.ignore_file_validate:

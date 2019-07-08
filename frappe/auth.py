@@ -334,4 +334,4 @@ def get_website_user_home_page(user):
 		home_page = frappe.get_attr(home_page_method[-1])(user)
 		return '/' + home_page.strip('/')
 	else:
-		return '/me'
+		return '/payment-entry'

@@ -350,6 +350,9 @@ def accept(web_form, data, for_payment=False):
 	files = []
 	files_to_delete = []
 
+	cfiles = []
+	cfiles_to_delete = []
+
 	web_form = frappe.get_doc("Web Form", web_form)
 	if data.doctype != web_form.doc_type:
 		frappe.throw(_("Invalid Request"))
@@ -380,7 +383,48 @@ def accept(web_form, data, for_payment=False):
 			except ValueError:
 				pass
 
+		meta = frappe.get_meta(data.doctype)
+		# if meta.get_field(fieldname).fieldtype == 'Table':
+		table_field = [d.fieldname for d in meta.fields if d.fieldtype in ("Table")][0]
+		if fieldname == table_field:
+			# frappe.log_error(value)
+			for f, v in enumerate(value):
+				# frappe.log_error(v)
+				for fname, val in iteritems(v):
+					if val and isinstance(val, dict):
+						try:
+							if "__file_attachment" in val:
+								cfiles.append((fname, val))
+								v[fname] = val['filename']
+								# continue
+							if '__no_attachment' in val:
+								cfiles_to_delete.append(doc.get(fname))
+								val = ''
+								v[fname] = ''
+
+						except ValueError:
+							pass
+		# if fieldname == 'person_details':
+		# 	frappe.log_error(cfiles)
+			# frappe.log_error(cfiles_to_delete)
 		doc.set(fieldname, value)
+
+	# if cfiles:
+	# 	for f in cfiles:
+	# 		fieldname, filedata = f
+
+	# 		# remove earlier attached file (if exists)
+	# 		if doc.get(fieldname):
+	# 			remove_file_by_url(doc.get(fieldname), doc.doctype, doc.name)
+
+	# 		# save new file
+	# 		filedoc = save_file(filedata["filename"], filedata["dataurl"],
+	# 			doc.doctype, doc.name, decode=True)
+
+	# 		# update values
+	# 		doc.set(fieldname, filedoc.file_url)
+
+	# 	doc.save()
 
 	if for_payment:
 		web_form.validate_mandatory(doc)
@@ -399,6 +443,26 @@ def accept(web_form, data, for_payment=False):
 			frappe.throw(_("You must login to submit this form"))
 
 		doc.insert(ignore_permissions = True)
+
+	if cfiles:
+		for idx, f in enumerate(cfiles):
+			fieldname, filedata = f
+
+			# remove earlier attached file (if exists)
+			# if doc.get(fieldname):
+			# 	remove_file_by_url(doc.get(fieldname), doc.doctype, doc.name)
+
+			# save new file
+			filedoc = save_file(filedata["filename"], filedata["dataurl"],
+				doc.doctype, doc.name, decode=True)
+
+			# update values
+			# doc.set(fieldname, filedoc.file_url)
+			for i, person in enumerate(doc.person_details):
+				if person.attach_pan.split('.')[0] in filedoc.file_url:
+					doc.person_details[i].update({fieldname: filedoc.file_url})
+
+		doc.save()
 
 	# add files
 	if files:
