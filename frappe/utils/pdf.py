@@ -14,7 +14,17 @@ def get_pdf(html, options=None, output = None):
 	fname = os.path.join("/tmp", "frappe-pdf-{0}.pdf".format(frappe.generate_hash()))
 
 	try:
-		pdfkit.from_string(html, fname, options=options or {})
+		pdfkit.from_string(html, fname, options={
+        "margin-top": "0mm",
+        "margin-bottom": "0mm",
+        "margin-left": "0mm",
+        "margin-right": "0mm",
+		'print-media-type': None,
+		'background': None,
+		'images': None,
+		'quiet': None,
+		'encoding': "UTF-8",
+    } or {})
 		if output:
 			append_pdf(PdfFileReader(file(fname,"rb")),output)
 		else:

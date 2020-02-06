@@ -46,7 +46,7 @@ frappe.views.QueryReport = Class.extend({
 		<div class="no-report-area msg-box no-border" style="display: none;"></div>\
 		<div class="chart-area" style="border-bottom: 1px solid #d1d8dd; margin: 0px 3%"></div>\
 		<div class="results" style="display: none;">\
-			<div class="result-area" style="height:70vh;"></div>\
+			<div class="result-area" style="height:80vh;"></div>\
 			<button class="btn btn-secondary btn-default btn-xs expand-all hidden" style="margin: 10px;">'+__('Expand All')+'</button>\
 			<button class="btn btn-secondary btn-default btn-xs collapse-all hidden" style="margin: 10px; margin-left: 0px;">'+__('Collapse All')+'</button>\
 			<p class="help-msg alert alert-warning text-center" style="margin: 15px; margin-top: 0px;"></p>\

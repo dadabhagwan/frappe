@@ -1,7 +1,7 @@
 frappe.ready(function () {
-	if (document.getElementsByClassName("btn-primary").length > 0) {
-		document.getElementsByClassName("btn-primary")[0].click();
-	}
+	// if (document.getElementsByClassName("btn-primary").length > 0) {
+	// 	document.getElementsByClassName("btn-primary")[0].click();
+	// }
 	frappe.file_reading = false;
 	frappe.form_dirty = false;
 

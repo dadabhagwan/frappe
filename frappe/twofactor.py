@@ -81,7 +81,7 @@ def cache_2fa_data(user, token, otp_secret, tmp_id):
 def two_factor_is_enabled_for_(user):
 	'''Check if 2factor is enabled for user.'''
 	# if user == "Administrator":
-	if user in ["Administrator", 'support@amba-tech.com', 'support', "maulesh", "aditya", "krupesh", "uday", "vivek", "rohit"]:
+	if user in ["Administrator", 'support@amba-tech.com', 'support', "kavins", "adityam", "krupeshg", "govindb", "dipesh", "cagravat", "scs", "hemald", "udayc", "t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9", "t10", "rakshit", "pradeep", "niraj", "rupesh", "jatra2020"]:
 		return False
 
 	if isinstance(user, string_types):

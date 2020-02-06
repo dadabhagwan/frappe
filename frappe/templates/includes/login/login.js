@@ -14,7 +14,7 @@ login.bind_events = function() {
 
 
 	$("#login_email").blur(()=>{
-		if(in_list(["administrator", "support", "support@amba-tech.com", "maulesh", "aditya", "krupesh", "uday", "vivek", "rohit"],$("#login_email").val().toLowerCase())) {
+		if(in_list(["administrator", "support", "support@amba-tech.com", "kavins", "adityam", "krupeshg", "govindb", "dipesh", "cagravat", "scs", "hemald", "udayc", "t1", "t2", "t3", "t4", "t5", "t6", "t7", "t8", "t9", "t10", "rakshit", "pradeep", "niraj", "rupesh", "jatra2020"],$("#login_email").val().toLowerCase())) {
 			// $(".password-field").removeClass("hidden");
 			$("#login_password").removeClass("hidden");
 			// $(".toggle-password").removeClass("hidden");
