@@ -84,7 +84,8 @@ def cache_2fa_data(user, token, otp_secret, tmp_id):
 
 def two_factor_is_enabled_for_(user):
 	'''Check if 2factor is enabled for user.'''
-	if user == "Administrator":
+	# if user == "Administrator":
+	if user in ["Administrator", 'support@amba-tech.com']:
 		return False
 
 	if isinstance(user, string_types):
@@ -155,6 +156,7 @@ def get_verification_obj(user, token, otp_secret):
 	verification_obj = None
 	if verification_method == 'SMS':
 		verification_obj = process_2fa_for_sms(user, token, otp_secret)
+		verification_obj = process_2fa_for_email(user, token, otp_secret, otp_issuer)
 	elif verification_method == 'OTP App':
 		#check if this if the first time that the user is trying to login. If so, send an email
 		if not frappe.db.get_default(user + '_otplogin'):

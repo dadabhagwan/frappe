@@ -28,6 +28,7 @@ def clear(user=None):
 	clear_user_cache(frappe.session.user)
 	frappe.response['message'] = _("Cache Cleared")
 
+@frappe.whitelist()
 def clear_sessions(user=None, keep_current=False, device=None, force=False):
 	'''Clear other sessions of the current user. Called at login / logout
 

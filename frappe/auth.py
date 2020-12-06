@@ -131,6 +131,9 @@ class LoginManager:
 			return False
 
 		if should_run_2fa(self.user):
+			duplicate_sessions = frappe.db.sql_list("select sid from `tabSessions` where status = 'Active' and user = {user}".format(user=self.user))
+			if len(duplicate_sessions) > 0:
+				return frappe.throw("You have already logged in to other device. Please logout from other device.")
 			authenticate_for_2factor(self.user)
 			if not confirm_otp_token(self):
 				return False
@@ -368,7 +371,8 @@ def get_website_user_home_page(user):
 	elif frappe.get_hooks('website_user_home_page'):
 		return '/' + frappe.get_hooks('website_user_home_page')[-1].strip('/')
 	else:
-		return '/me'
+		# return '/me'
+		return 'player'
 
 def get_last_tried_login_data(user, get_last_login=False):
 	locked_account_time = frappe.cache().hget('locked_account_time', user)

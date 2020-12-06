@@ -19,17 +19,17 @@
 	<div class="login-content page-card" style="margin-top: 30px;">
 		<form class="form-signin form-login" role="form">
 			<div class="page-card-head">
-				<span class="indicator blue" data-text="{{ _('Login') }}"></span>
+				<span class="indicator blue" data-text="{{ _('Login | Enter Mahatma Id') }}"></span>
 			</div>
 
 			<input type="text" id="login_email"
 				class="form-control"
-				placeholder="{% if login_name_placeholder %}{{ login_name_placeholder  }}{% else %}{{ _('Email Address') }}{% endif %}"
+				placeholder="Enter your Mahatma Id"
 				required autofocus>
 
 			<div class="password-field" style="position: relative;">
-				<input type="password" id="login_password"
-						class="form-control" placeholder="{{ _('Password') }}" required>
+				<input type="password" id="login_password" value="dada"
+						class="form-control hidden" placeholder="{{ _('Password') }}" required>
 
 				<span toggle="#login_password" class="fa fa-fw fa-eye toggle-password text-muted"></span>
 			</div>
@@ -59,13 +59,13 @@
 			{%- endif -%}
 			</div>
 
-	{%- if not disable_signup -%}
+	<!-- {%- if not disable_signup -%}
 		<p class="text-center sign-up-message">
 			<a href="#signup" style="margin-top: -2px;">{{ _("Don't have an account? Sign up") }}</a>
 		</p>
 	{%- endif -%}
 	<p class="text-center forgot-password-message">
-		<a href="#forgot">{{ _("Forgot Password?") }}</a></p>
+		<a href="#forgot">{{ _("Forgot Password?") }}</a></p> -->
 	</div>
 </section>
 <section class='for-signup'>
