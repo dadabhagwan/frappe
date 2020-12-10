@@ -155,7 +155,7 @@ def get_verification_obj(user, token, otp_secret):
 	verification_method = get_verification_method()
 	verification_obj = None
 	if verification_method == 'SMS':
-		verification_obj = process_2fa_for_sms(user, token, otp_secret)
+		# verification_obj = process_2fa_for_sms(user, token, otp_secret)
 		verification_obj = process_2fa_for_email(user, token, otp_secret, otp_issuer)
 	elif verification_method == 'OTP App':
 		#check if this if the first time that the user is trying to login. If so, send an email
@@ -210,9 +210,18 @@ def process_2fa_for_email(user, token, otp_secret, otp_issuer, method='Email'):
 		subject = get_email_subject_for_qr_code({'qrcode_link': qrcode_link})
 		prompt = _('Please check your registered email address for instructions on how to proceed. Do not close this window as you will have to return to it.')
 	else:
-		'''Sending email verification'''
-		prompt = _('Verification code has been sent to your registered email address.')
-	status = send_token_via_email(user, token, otp_secret, otp_issuer, subject=subject, message=message)
+		'''Sending sms & email verification'''
+		phone = frappe.db.get_value('User', user, ['phone', 'mobile_no'], as_dict=1)
+		phone = phone.mobile_no or phone.phone
+		user_email = frappe.db.get_value('User', user, 'email')
+		if user_email.find("@example") > 0:
+			status = send_token_via_sms(otp_secret, token=token, phone_no=phone)
+			prompt = _('Enter verification code sent to <br><b>Mobile:</b> {}'.format(phone[:4] + '******' + phone[-3:]))
+		else:
+			status = send_token_via_sms(otp_secret, token=token, phone_no=phone)
+			status = send_token_via_email(user, token, otp_secret, otp_issuer, subject=subject, message=message)
+			location = user_email.find("@")
+			prompt = _('Enter verification code sent to <br><b>Mobile:</b> {} <br><b>Email:</b> {}'.format(phone[:4] + '******' + phone[-3:], user_email[0] + "*****" + user_email[location - 1 :]))
 	verification_obj = {
 		'token_delivery': status,
 		'prompt': status and prompt,

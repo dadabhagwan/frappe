@@ -372,7 +372,7 @@ def get_website_user_home_page(user):
 		return '/' + frappe.get_hooks('website_user_home_page')[-1].strip('/')
 	else:
 		# return '/me'
-		return 'player'
+		return '/player'
 
 def get_last_tried_login_data(user, get_last_login=False):
 	locked_account_time = frappe.cache().hget('locked_account_time', user)

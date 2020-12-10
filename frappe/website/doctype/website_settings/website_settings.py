@@ -73,7 +73,7 @@ def get_website_settings():
 		'top_bar_items': get_items('top_bar_items'),
 		'footer_items': get_items('footer_items'),
 		"post_login": [
-			{"label": _("My Account"), "url": "/me"},
+			# {"label": _("My Account"), "url": "/me"},
 			{"label": _("Logout"), "url": "/?cmd=web_logout"}
 		]
 	})
