@@ -140,7 +140,7 @@
   },
   {
    "bold": 1,
-   "default": "1",
+   "default": "0",
    "depends_on": "eval:doc.__islocal",
    "fieldname": "send_welcome_email",
    "fieldtype": "Check",
@@ -586,7 +586,7 @@
  "idx": 413,
  "image_field": "user_image",
  "max_attachments": 5,
- "modified": "2019-10-22 14:16:34.810223",
+ "modified": "2020-12-11 11:46:29.555447",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",
