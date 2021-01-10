@@ -14,10 +14,14 @@
   "middle_name",
   "last_name",
   "full_name",
+  "otp",
   "send_welcome_email",
   "unsubscribed",
   "column_break0",
   "username",
+  "gender",
+  "mobile_no",
+  "new_password",
   "language",
   "time_zone",
   "user_image",
@@ -26,9 +30,7 @@
   "roles_html",
   "roles",
   "short_bio",
-  "gender",
   "phone",
-  "mobile_no",
   "birth_date",
   "location",
   "banner_image",
@@ -37,7 +39,6 @@
   "bio",
   "mute_sounds",
   "change_password",
-  "new_password",
   "logout_all_sessions",
   "reset_password_key",
   "last_password_reset_date",
@@ -242,8 +243,7 @@
   {
    "fieldname": "mobile_no",
    "fieldtype": "Data",
-   "label": "Mobile No",
-   "unique": 1
+   "label": "Mobile No"
   },
   {
    "fieldname": "birth_date",
@@ -293,6 +293,7 @@
    "label": "Change Password"
   },
   {
+   "default": "dada",
    "fieldname": "new_password",
    "fieldtype": "Password",
    "label": "Set New Password",
@@ -580,13 +581,19 @@
    "fieldtype": "Password",
    "label": "API Secret",
    "read_only": 1
+  },
+  {
+   "fieldname": "otp",
+   "fieldtype": "Data",
+   "label": "OTP",
+   "reqd": 1
   }
  ],
  "icon": "fa fa-user",
  "idx": 413,
  "image_field": "user_image",
  "max_attachments": 5,
- "modified": "2020-12-11 11:46:29.555447",
+ "modified": "2021-01-10 18:21:47.172591",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",
@@ -614,7 +621,7 @@
   }
  ],
  "quick_entry": 1,
- "search_fields": "full_name",
+ "search_fields": "full_name, username, first_name",
  "show_name_in_global_search": 1,
  "sort_field": "modified",
  "sort_order": "DESC",

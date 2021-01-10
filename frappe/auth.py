@@ -131,9 +131,9 @@ class LoginManager:
 			return False
 
 		if should_run_2fa(self.user):
-			duplicate_sessions = frappe.db.sql_list("select sid from `tabSessions` where status = 'Active' and user = {user}".format(user=self.user))
-			if len(duplicate_sessions) > 0:
-				return frappe.throw("You have already logged in to other device. Please logout from other device.")
+			# duplicate_sessions = frappe.db.sql_list("select sid from `tabSessions` where status = 'Active' and user = '{user}'".format(user=self.user))
+			# if len(duplicate_sessions) > 0:
+			# 	return frappe.throw("You have already logged in to other device. Please logout from other device.")
 			authenticate_for_2factor(self.user)
 			if not confirm_otp_token(self):
 				return False

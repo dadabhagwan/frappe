@@ -317,7 +317,17 @@ var request_otp = function (r) {
 			<div id="otp_div"></div>\
 			<input type="text" id="login_token" autocomplete="off" class="form-control" placeholder={{ _("Verification Code") }} required="" autofocus="">\
 			<button class="btn btn-sm btn-primary btn-block" id="verify_token">{{ _("Verify") }}</button>\
-			</form><br><p>If this is not your correct mobile number pleases contact centre coordinator or if your centre is not there then contact Satsang coordination office to update your mobile number.</p><br><p>જો આપનો મોબાઇલ નંબર સાચો ના હોય તો આપ આપના સેન્ટર કોર્ડીનેટરનો સંપર્ક કરો અથવા આપને ત્યાં સેન્ટર ન હોય તો આપ સત્સંગ કોર્ડીનેશન ઓફિસમાં સંપર્ક કરો.</p>'));
+			</form><br><p>આપને SMS મેસેજમાં કે ઈમેઈલમાં ૬ અંકનો OTP/ઓ.ટી.પી (વન ટાઈમ પાસવર્ડ) આવ્યો હશે તે અહીં લખશો. જો OTP ના આવ્યો હોય તો નીચેના નંબર ઉપર સંપર્ક કરશો.<br><br>\
+			आप को मेसेज या ईमेल में ६ अंक का OTP/ओ.टी.पी (वन टाईम पासवर्ड) आया होगा, वह यहाँ लिखिए | अगर OTP नहीं आया तो नीचे दिए नंबर पे संपर्क करें |<br><br>\
+			You must have received an OTP (One Time Password) on your email / registered phone number. If you haven’t received it, please contact the following numbers.<br><br>\
+			<b>Note :</b> People living outside India will receive OTP on email.<br>\
+			<b>Phone number : 93136 87837</b><br>\
+			<b>Phone number : 78028 13344</b><br>\
+			<b>Phone number : 78028 13352</b><br>\
+			<b>WhatsApp number : 81606 41842</b><br><br>\
+			વિદેશમાં વસતા મહાત્માઓ માટે / विदेश में बसें महात्माओ के लिए / For people living abroad :<br>\
+			<b>WhatsApp number : 95109 70850</b>\
+			</p>'));
 	// add event handler for submit button
 	verify_token();
 }

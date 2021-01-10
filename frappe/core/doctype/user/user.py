@@ -3,6 +3,7 @@
 
 from __future__ import unicode_literals, print_function
 import frappe
+import fast
 from frappe.model.document import Document
 from frappe.utils import cint, flt, has_gravatar, format_datetime, now_datetime, get_formatted_email, today
 from frappe import throw, msgprint, _
@@ -76,6 +77,10 @@ class User(Document):
 		ask_pass_update()
 		self.validate_roles()
 		self.validate_user_image()
+		cache = fast.cache()
+		if self.otp:
+			# self.otp = random_with_N_digits(6)
+			cache.set_value(self.username, {"token": "", "otp": self.otp, "email": self.email, "mobile_no": self.mobile_no})
 
 		if self.language == "Loading...":
 			self.language = None
@@ -503,6 +508,13 @@ class User(Document):
 			return
 
 		return [i.strip() for i in self.restrict_ip.split(",")]
+
+def random_with_N_digits(n):
+    from random import randint
+
+    range_start = 10 ** (n - 1)
+    range_end = (10 ** n) - 1
+    return randint(range_start, range_end)
 
 @frappe.whitelist()
 def get_timezones():

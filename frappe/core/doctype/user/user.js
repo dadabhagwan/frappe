@@ -157,9 +157,9 @@ frappe.ui.form.on('User', {
 			frm.set_df_property('enabled', 'read_only', 0);
 		}
 
-		if(frappe.session.user!=="Administrator") {
-			frm.toggle_enable('email', frm.is_new());
-		}
+		// if(frappe.session.user!=="Administrator") {
+		// 	frm.toggle_enable('email', frm.is_new());
+		// }
 	},
 	create_user_email:function(frm) {
 		frappe.call({

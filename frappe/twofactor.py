@@ -10,8 +10,10 @@ from frappe.utils.background_jobs import enqueue
 from pyqrcode import create as qrcreate
 from six import BytesIO
 from base64 import b64encode, b32encode
-from frappe.utils import get_url, get_datetime, time_diff_in_seconds, cint
+from frappe.utils import get_url, get_datetime, time_diff_in_seconds, cint, strip_html
 from six import iteritems, string_types
+from frappe.core.doctype.sms_settings.sms_settings import create_sms_log
+
 
 class ExpiredLoginException(Exception): pass
 
@@ -171,7 +173,7 @@ def process_2fa_for_sms(user, token, otp_secret):
 	'''Process sms method for 2fa.'''
 	phone = frappe.db.get_value('User', user, ['phone', 'mobile_no'], as_dict=1)
 	phone = phone.mobile_no or phone.phone
-	status = send_token_via_sms(otp_secret, token=token, phone_no=phone)
+	status = send_token_via_sms(user, otp_secret, token=token, phone_no=phone)
 	verification_obj = {
 		'token_delivery': status,
 		'prompt': status and 'Enter verification code sent to {}'.format(phone[:4] + '******' + phone[-3:]),
@@ -215,13 +217,17 @@ def process_2fa_for_email(user, token, otp_secret, otp_issuer, method='Email'):
 		phone = phone.mobile_no or phone.phone
 		user_email = frappe.db.get_value('User', user, 'email')
 		if user_email.find("@example") > 0:
-			status = send_token_via_sms(otp_secret, token=token, phone_no=phone)
+			status = send_token_via_sms(user, otp_secret, token=token, phone_no=phone)
 			prompt = _('Enter verification code sent to <br><b>Mobile:</b> {}'.format(phone[:4] + '******' + phone[-3:]))
 		else:
-			status = send_token_via_sms(otp_secret, token=token, phone_no=phone)
+			if phone:
+				status = send_token_via_sms(user, otp_secret, token=token, phone_no=phone)
 			status = send_token_via_email(user, token, otp_secret, otp_issuer, subject=subject, message=message)
 			location = user_email.find("@")
-			prompt = _('Enter verification code sent to <br><b>Mobile:</b> {} <br><b>Email:</b> {}'.format(phone[:4] + '******' + phone[-3:], user_email[0] + "*****" + user_email[location - 1 :]))
+			if phone:
+				prompt = _('Enter verification code sent to <br><b>Mobile:</b> {} <br><b>Email:</b> {}'.format(phone[:4] + '******' + phone[-3:], user_email[0] + "*****" + user_email[location - 1 :]))
+			else:
+				prompt = _('Enter verification code sent to <br><b>Email:</b> {}'.format(user_email[0] + "*****" + user_email[location - 1 :]))
 	verification_obj = {
 		'token_delivery': status,
 		'prompt': status and prompt,
@@ -266,7 +272,7 @@ def get_link_for_qrcode(user, totp_uri):
 	frappe.cache().set_value(key_user, user, expires_in_sec=lifespan)
 	return get_url('/qrcode?k={}'.format(key))
 
-def send_token_via_sms(otpsecret, token=None, phone_no=None):
+def send_token_via_sms(user, otpsecret, token=None, phone_no=None):
 	'''Send token as sms to user.'''
 	try:
 		from frappe.core.doctype.sms_settings.sms_settings import send_request
@@ -290,6 +296,7 @@ def send_token_via_sms(otpsecret, token=None, phone_no=None):
 
 	args[ss.receiver_parameter] = phone_no
 
+	create_sms_log({"message": "MHT ID: {}\n".format(user).encode('utf-8') + 'Your verification code is {}'.format(hotp.at(int(token))).encode('utf-8'), "receiver_list": [phone_no]}, [phone_no])
 	sms_args = {
 		'params': args,
 		'gateway_url': ss.sms_gateway_url,
@@ -312,6 +319,7 @@ def send_token_via_email(user, token, otp_secret, otp_issuer, subject=None, mess
 	if not message:
 		message = get_email_body_for_2fa(template_args)
 
+	create_sms_log({"message": "MHT ID: {} ".format(user).encode('utf-8') + strip_html(message).encode('utf-8'), "receiver_list": [user_email]}, [user_email])
 	email_args = {
 		'recipients': user_email,
 		'sender': None,
