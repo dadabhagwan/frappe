@@ -8,6 +8,7 @@
  "field_order": [
   "sb0_5",
   "enabled",
+  "user_status",
   "section_break_3",
   "email",
   "first_name",
@@ -101,6 +102,7 @@
   {
    "fieldname": "email",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Email",
    "no_copy": 1,
    "oldfieldname": "email",
@@ -243,6 +245,7 @@
   {
    "fieldname": "mobile_no",
    "fieldtype": "Data",
+   "in_standard_filter": 1,
    "label": "Mobile No"
   },
   {
@@ -585,15 +588,20 @@
   {
    "fieldname": "otp",
    "fieldtype": "Data",
-   "label": "OTP",
-   "reqd": 1
+   "in_list_view": 1,
+   "label": "OTP"
+  },
+  {
+   "fieldname": "user_status",
+   "fieldtype": "HTML",
+   "label": "User Status"
   }
  ],
  "icon": "fa fa-user",
  "idx": 413,
  "image_field": "user_image",
  "max_attachments": 5,
- "modified": "2021-01-10 18:21:47.172591",
+ "modified": "2021-01-13 20:08:18.981663",
  "modified_by": "Administrator",
  "module": "Core",
  "name": "User",

@@ -144,6 +144,19 @@ frappe.ui.form.on('User', {
 			frm.dirty();
 		}
 
+		if(frm.doc.username) {
+			frappe.call({
+				method: "frappe.core.doctype.user.user.get_user_status",
+				args: {
+					name: frm.doc.name,
+					mht_id: frm.doc.username
+				},
+				callback: function(r) {
+					frm.fields_dict["user_status"].$wrapper.html(r.message);
+				}
+			});
+		}
+
 	},
 	validate: function(frm) {
 		if(frm.roles_editor) {

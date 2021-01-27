@@ -78,9 +78,14 @@ class User(Document):
 		self.validate_roles()
 		self.validate_user_image()
 		cache = fast.cache()
-		if self.otp:
-			# self.otp = random_with_N_digits(6)
-			cache.set_value(self.username, {"token": "", "otp": self.otp, "email": self.email, "mobile_no": self.mobile_no})
+		if not self.otp:
+			self.otp = random_with_N_digits(6)
+		# cache.set_value(self.username, {"token": "", "otp": self.otp, "email": self.email, "mobile_no": self.mobile_no})
+		# if self.otp:
+		# 	# self.otp = random_with_N_digits(6)
+		# 	cache.set_value(self.username, {"token": "", "otp": self.otp, "email": self.email, "mobile_no": self.mobile_no})
+		# else:
+		# 	cache.set_value(self.username, {"token": "", "otp": "162021", "email": self.email, "mobile_no": self.mobile_no})
 
 		if self.language == "Loading...":
 			self.language = None
@@ -515,6 +520,21 @@ def random_with_N_digits(n):
     range_start = 10 ** (n - 1)
     range_end = (10 ** n) - 1
     return randint(range_start, range_end)
+
+@frappe.whitelist()
+def get_user_status(name, mht_id):
+	import fast
+	from fast.utils import as_dict
+	cache = fast.cache()
+	user_exists = cache.get_value(mht_id)
+	if isinstance(user_exists, dict):
+		user_exists = as_dict(user_exists)
+		if user_exists.get("token"):
+			return f"Logged In<br>Cached OTP-{user_exists.get('otp')}"
+		else:
+			return f"Not Logged In<br>Cached OTP-{user_exists.get('otp')}"
+	else:
+		return "Not Logged In"
 
 @frappe.whitelist()
 def get_timezones():
